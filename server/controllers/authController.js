@@ -65,6 +65,8 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log('Login attempt:', { email, hasPassword: !!password });
+
     // Validate email & password
     if (!email || !password) {
       return res.status(400).json({
@@ -77,6 +79,7 @@ exports.login = async (req, res) => {
     const admin = await Admin.findOne({ email }).select('+password');
 
     if (!admin) {
+      console.log('Admin not found:', email);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -85,6 +88,7 @@ exports.login = async (req, res) => {
 
     // Check if admin is active
     if (!admin.isActive) {
+      console.log('Admin account inactive:', email);
       return res.status(401).json({
         success: false,
         message: 'Account is inactive. Please contact administrator.'
@@ -95,14 +99,17 @@ exports.login = async (req, res) => {
     const isMatch = await admin.comparePassword(password);
 
     if (!isMatch) {
+      console.log('Password mismatch for:', email);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
       });
     }
 
+    console.log('Login successful:', email);
     sendTokenResponse(admin, 200, res);
   } catch (error) {
+    console.error('Login error:', error.message);
     res.status(500).json({
       success: false,
       message: 'Error logging in',
