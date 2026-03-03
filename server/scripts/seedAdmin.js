@@ -24,7 +24,7 @@ const seedAdmin = async () => {
       name: 'Admin',
       email: process.env.ADMIN_EMAIL || 'admin@ssvgi.edu',
       password: process.env.ADMIN_PASSWORD || 'admin123',
-      role: 'superadmin'
+      role: 'master'
     });
 
     console.log('✅ Admin created successfully!');
