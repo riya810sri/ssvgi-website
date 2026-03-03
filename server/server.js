@@ -66,6 +66,17 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'SSVGI API is running' });
 });
 
+// Debug route - check DB connection (remove in production)
+app.get('/api/debug', (req, res) => {
+  res.json({
+    status: 'debug',
+    mongodbUri: process.env.MONGODB_URI ? 'Set' : 'NOT SET',
+    mongodbUriStart: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 30) + '...' : 'N/A',
+    nodeEnv: process.env.NODE_ENV,
+    port: process.env.PORT
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
