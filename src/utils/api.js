@@ -15,6 +15,11 @@ export const apiCall = async (endpoint, options = {}) => {
       },
     });
 
+    // Handle network errors
+    if (!response) {
+      throw new Error('Network response was not ok');
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
@@ -23,6 +28,10 @@ export const apiCall = async (endpoint, options = {}) => {
 
     return data;
   } catch (error) {
+    // Handle network failures
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Network error. Please check your internet connection.');
+    }
     throw error;
   }
 };
@@ -59,6 +68,10 @@ export const uploadFile = async (endpoint, formData, token = null) => {
       body: formData,
     });
 
+    if (!response) {
+      throw new Error('Network response was not ok');
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
@@ -67,6 +80,9 @@ export const uploadFile = async (endpoint, formData, token = null) => {
 
     return data;
   } catch (error) {
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Network error. Please check your internet connection.');
+    }
     throw error;
   }
 };
